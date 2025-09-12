@@ -1,0 +1,34 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+env/
+capo/
+docs/
+
+
+# Data & vector dbs
+vector_db/
+uploaded_docs/
+generated_ppt/
+
+# Logs
+*.log
+
+# Git & IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Large files
+*.pdf
+*.docx
+*.pptx
+*.zip
+*.tar
+*.gz

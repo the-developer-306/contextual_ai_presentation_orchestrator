@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai_preso_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./uploaded_docs:/app/uploaded_docs
+      - ./vector_db:/app/vector_db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: ai_preso_frontend
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    environment:
+      - API_BASE_URL=http://backend:8000/api

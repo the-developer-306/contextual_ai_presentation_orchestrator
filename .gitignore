@@ -1,0 +1,7 @@
+capo/
+docs/
+vector_db/
+uploaded_docs/
+
+.env
+testing.py
