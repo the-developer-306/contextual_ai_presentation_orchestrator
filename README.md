@@ -32,7 +32,7 @@ Key Features
 System Architecture Diagram
 ---------------------------
 
-![alt text](docs/image.png)
+![alt text](image.png)
 
 * * * * *
 
