@@ -155,35 +155,43 @@ else:
                 if response.status_code == 200:
                     result = response.json()
                     st.session_state["ppt_json"] = result.get("ppt_json")
-                    st.session_state["ppt_path"] = result.get("ppt_path")
 
                     st.success(" Presentation generated successfully!")
                     if st.session_state["ppt_json"]:
-                        st.success("Presentation will soon be available for download")
+                        st.success("Presentation is ready for download below")
                     else:
                         st.info("No JSON returned.")
-
-                    ppt_path = st.session_state.get("ppt_path")
-                    if ppt_path and perms["download"] and os.path.exists(ppt_path):
-                        with open(ppt_path, "rb") as f:
-                            st.download_button(
-                                label=" Download PPT",
-                                data=f,
-                                file_name=os.path.basename(ppt_path),
-                                mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                            )
-                    elif ppt_path and not os.path.exists(ppt_path):
-                        st.warning(" PPT file not found on server path.")
                 elif response.status_code in (401, 403):
-                    try:
-                        msg = response.json()
-                        st.error(f" {msg.get('detail') or msg}")
-                    except:
-                        st.error(f" Authorization error: {response.status_code}")
+                    msg = response.json()
+                    st.error(f" {msg.get('detail') or msg}")
                 else:
                     st.error(f" Generation failed: status {response.status_code}")
             except Exception as e:
                 st.error(f" Error: {e}")
+
+# ---------------- DOWNLOAD PPT ----------------
+if perms["download"] and st.session_state.get("ppt_json"):
+    if st.button(" Download PPT"):
+        with st.spinner("Preparing your PPT..."):
+            try:
+                dl_response = requests.post(
+                    f"{API_BASE_URL}/download-ppt",
+                    json=st.session_state["ppt_json"],
+                    headers=headers,
+                    timeout=300
+                )
+                if dl_response.status_code == 200:
+                    st.download_button(
+                        label="📂 Save PPT File",
+                        data=dl_response.content,
+                        file_name="AI_Presentation.pptx",
+                        mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                    )
+                else:
+                    st.error(f" Download failed: {dl_response.status_code} {dl_response.text}")
+            except Exception as e:
+                st.error(f" Error: {e}")
+
 
 st.divider()
 

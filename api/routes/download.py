@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, Body
 from utils.ppt_generator import PPTGenerator
 from utils.security import require_role
 from utils.masking import mask_all_sensitive
@@ -7,7 +7,7 @@ router = APIRouter(tags=["Download"])
 
 @router.post("/download-ppt")
 async def download_ppt(
-    ppt_json: dict,
+    ppt_json: dict = Body(...),
     user=Depends(require_role(["Executive", "Senior Manager", "Analyst", "Junior Staff"]))
 ):
     try:
@@ -30,7 +30,7 @@ async def download_ppt(
             ppt_json = {"slides": masked_slides, "summary": ppt_json.get("summary", "")}
 
         ppt_generator = PPTGenerator(output_dir="generated_ppt")
-        ppt_path = ppt_generator.generate_ppt(ppt_json, filename="AI_Presentation.pptx")
+        ppt_path = ppt_generator.generate_ppt(ppt_json, file_name="AI_Presentation.pptx")
 
         with open(ppt_path, "rb") as f:
             ppt_bytes = f.read()

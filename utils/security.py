@@ -88,7 +88,7 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Security(bearer
     payload = verify_token(token)
 
     # Debug log
-    print("🔑 Decoded JWT payload:", payload)
+    print(" Decoded JWT payload:", payload)
 
     return {"email": payload["sub"], "role": payload["role"]}
 
